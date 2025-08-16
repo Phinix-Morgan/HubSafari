@@ -71,26 +71,28 @@ export default function MenuItemForm({ initialData }: MenuItemFormProps) {
     }
   };
 
+  const uploadImage = async (file: File): Promise<string> => {
+    // If there was an old image, delete it from storage
+    if (initialData?.imageUrl) {
+        try {
+            const oldImageRef = ref(storage, initialData.imageUrl);
+            await deleteObject(oldImageRef);
+        } catch (error) {
+            console.warn("Old image deletion failed. It might not exist or you may not have permission.", error);
+        }
+    }
+    const imageRef = ref(storage, `menuItems/${Date.now()}_${file.name}`);
+    const snapshot = await uploadBytes(imageRef, file);
+    return getDownloadURL(snapshot.ref);
+  };
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
     try {
       let imageUrl = initialData?.imageUrl || '';
       
-      // If a new image is selected, upload it
       if (imageFile) {
-        // If there was an old image, delete it from storage
-        if (initialData?.imageUrl) {
-            try {
-                const oldImageRef = ref(storage, initialData.imageUrl);
-                await deleteObject(oldImageRef);
-            } catch (error) {
-                console.warn("Old image deletion failed. It might not exist.", error);
-            }
-        }
-        // Upload the new image
-        const imageRef = ref(storage, `menuItems/${Date.now()}_${imageFile.name}`);
-        const snapshot = await uploadBytes(imageRef, imageFile);
-        imageUrl = await getDownloadURL(snapshot.ref);
+        imageUrl = await uploadImage(imageFile);
       }
 
       const menuItemData = {
@@ -110,9 +112,10 @@ export default function MenuItemForm({ initialData }: MenuItemFormProps) {
         toast({ description: "Menu item created successfully." });
       }
       router.push('/admin/dashboard');
+      router.refresh(); // Force a refresh to reflect changes
     } catch (error) {
         console.error("Form submission error:", error);
-        toast({ variant: "destructive", title: "Error", description: "Something went wrong." });
+        toast({ variant: "destructive", title: "Error", description: "Something went wrong. Check console for details." });
     } finally {
         setLoading(false);
     }
