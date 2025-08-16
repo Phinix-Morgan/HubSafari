@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from 'react';
@@ -8,6 +9,9 @@ import MenuItemCard from '@/components/menu/menu-item-card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent } from '@/components/ui/card';
+import { Utensils } from 'lucide-react';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 export default function MenuPage() {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
@@ -22,10 +26,12 @@ export default function MenuPage() {
         const querySnapshot = await getDocs(q);
         const items = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as MenuItem));
         
-        const uniqueCategories = ["All", ...Array.from(new Set(items.map(item => item.category)))];
+        if (items.length > 0) {
+          const uniqueCategories = ["All", ...Array.from(new Set(items.map(item => item.category)))];
+          setCategories(uniqueCategories);
+        }
         
         setMenuItems(items);
-        setCategories(uniqueCategories);
       } catch (error) {
         console.error("Error fetching menu items: ", error);
       } finally {
@@ -36,12 +42,22 @@ export default function MenuPage() {
   }, []);
 
   const renderSkeletons = () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {Array.from({ length: 6 }).map((_, index) => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+      {Array.from({ length: 8 }).map((_, index) => (
          <Card key={index}><CardContent className="p-4 space-y-4"><Skeleton className="h-48 w-full" /><Skeleton className="h-6 w-3/4" /><Skeleton className="h-4 w-full" /><Skeleton className="h-4 w-1/2" /><Skeleton className="h-10 w-32" /></CardContent></Card>
       ))}
     </div>
   );
+  
+  const renderEmptyState = () => (
+    <div className="text-center py-16 bg-secondary rounded-lg">
+        <Utensils className="mx-auto h-12 w-12 text-muted-foreground" />
+        <h2 className="mt-4 text-2xl font-headline">Our Menu is Currently Empty</h2>
+        <p className="mt-2 text-muted-foreground">The chef is busy preparing new dishes. Please check back later!</p>
+        <p className="mt-1 text-sm text-muted-foreground">(Or, if you're the admin, <Link href="/admin/dashboard" className="underline hover:text-primary">go seed the database</Link>.)</p>
+    </div>
+  );
+
 
   return (
     <div className="container py-12 md:py-20">
@@ -53,9 +69,11 @@ export default function MenuPage() {
             <div className="flex justify-center mb-8"><Skeleton className="h-10 w-96" /></div>
             {renderSkeletons()}
         </>
+      ) : menuItems.length === 0 ? (
+        renderEmptyState()
       ) : (
         <Tabs defaultValue="All" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:grid-cols-5 mb-8">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-5 mb-8">
             {categories.map(category => (
               <TabsTrigger key={category} value={category}>{category}</TabsTrigger>
             ))}

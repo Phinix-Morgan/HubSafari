@@ -16,6 +16,7 @@ import { useToast } from '@/hooks/use-toast';
 export default function DashboardPage() {
     const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isSeeding, setIsSeeding] = useState(false);
     const { toast } = useToast();
 
     useEffect(() => {
@@ -26,31 +27,41 @@ export default function DashboardPage() {
                 items.push({ id: doc.id, ...doc.data() } as MenuItem);
             });
             setMenuItems(items);
-            setLoading(false);
+            if (loading) { // Only check for seeding on initial load
+                if (items.length === 0) {
+                    handleSeed(true); // Automatically seed if empty
+                } else {
+                    setLoading(false);
+                }
+            }
         }, (error) => {
             console.error("Error fetching menu items: ", error);
+            toast({ variant: "destructive", title: "Error", description: "Could not fetch menu items." });
             setLoading(false);
         });
 
         return () => unsubscribe();
-    }, []);
+    }, [loading]); // Rerun when loading state changes
 
-    const handleSeed = async () => {
-        setLoading(true);
+    const handleSeed = async (silent = false) => {
+        setIsSeeding(true);
         const result = await seedDatabase();
-        if (result.success) {
-            toast({
-                title: "Database Seeded",
-                description: result.message,
-            });
-        } else {
-             toast({
-                variant: "default",
-                title: "Database Not Seeded",
-                description: result.message,
-            });
+        if (!silent) {
+            if (result.success) {
+                toast({
+                    title: "Database Seeded",
+                    description: result.message,
+                });
+            } else {
+                 toast({
+                    variant: "default",
+                    title: "Database Not Seeded",
+                    description: result.message,
+                });
+            }
         }
-        setLoading(false);
+        setIsSeeding(false);
+        setLoading(false); // Ensure loading is false after seeding completes
     }
 
     return (
@@ -61,12 +72,10 @@ export default function DashboardPage() {
                     <p className="text-muted-foreground">Add, edit, or remove menu items.</p>
                 </div>
                 <div className="flex gap-2">
-                    {menuItems.length === 0 && (
-                        <Button onClick={handleSeed} variant="outline">
-                            <Sprout className="mr-2 h-4 w-4" />
-                            Seed Menu
-                        </Button>
-                    )}
+                    <Button onClick={() => handleSeed(false)} variant="outline" disabled={isSeeding || loading}>
+                        {isSeeding ? <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-current mr-2" /> : <Sprout className="mr-2 h-4 w-4" />}
+                        {isSeeding ? 'Seeding...' : 'Seed Menu'}
+                    </Button>
                     <Button asChild>
                         <Link href="/admin/dashboard/add">
                             <PlusCircle className="mr-2 h-4 w-4" />
@@ -77,9 +86,10 @@ export default function DashboardPage() {
             </div>
             {loading ? (
                 <div className="space-y-2">
-                    <Skeleton className="h-12 w-full" />
-                    <Skeleton className="h-12 w-full" />
-                    <Skeleton className="h-12 w-full" />
+                    <Skeleton className="h-16 w-full" />
+                    <Skeleton className="h-16 w-full" />
+                    <Skeleton className="h-16 w-full" />
+                    <Skeleton className="h-16 w-full" />
                 </div>
             ) : (
                 <MenuItemsTable menuItems={menuItems} />
