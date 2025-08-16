@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { Minus, Plus, Trash2, X, Utensils } from 'lucide-react';
+import { Minus, Plus, Trash2, X, Utensils, IndianRupee } from 'lucide-react';
 import { Badge } from '../ui/badge';
 
 interface CartDrawerProps {
@@ -62,7 +62,7 @@ export default function CartDrawer({ isOpen, onOpenChange }: CartDrawerProps) {
                       </div>
                       <div>
                         <p className="font-semibold">{item.name} <Badge variant="outline" className="capitalize">{item.selectedQuantity}</Badge></p>
-                        <p className="text-sm text-muted-foreground">₹{getItemPrice(item).toFixed(2)}</p>
+                        <p className="text-sm text-muted-foreground flex items-center"><IndianRupee className="h-3 w-3 mr-1" />{getItemPrice(item).toFixed(2)}</p>
                         <div className="flex items-center gap-2 mt-2">
                           <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => updateQuantity(item.id, item.selectedQuantity, item.quantity - 1)}>
                             <Minus className="h-4 w-4" />
@@ -84,9 +84,9 @@ export default function CartDrawer({ isOpen, onOpenChange }: CartDrawerProps) {
             <Separator />
             <SheetFooter className="p-6 bg-secondary">
               <div className="w-full space-y-4">
-                <div className="flex justify-between font-bold text-lg">
+                <div className="flex justify-between font-bold text-lg items-center">
                   <span>Total</span>
-                  <span>₹{cartTotal.toFixed(2)}</span>
+                  <span className="flex items-center"><IndianRupee className="h-5 w-5 mr-1" />{cartTotal.toFixed(2)}</span>
                 </div>
                 <Button className="w-full" onClick={handleOrderNow}>
                   Order on WhatsApp
