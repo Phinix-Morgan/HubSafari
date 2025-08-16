@@ -44,14 +44,14 @@ export default function AboutPage() {
         <div className="grid md:grid-cols-2 gap-12 items-center mb-20">
           <div className="order-2 md:order-1">
             <h2 className="text-3xl font-headline text-primary mb-4">From a Dream to Your Table</h2>
-            <p className="text-muted-foreground space-y-4">
-              <span>
+            <div className="text-muted-foreground space-y-4">
+              <p>
                 Flavors Express began with a simple idea: to create a place where people could enjoy exceptional food in a warm and inviting atmosphere. Our founder, John Doe, traveled the world, gathering inspiration from diverse culinary traditions.
-              </span>
-              <span>
+              </p>
+              <p>
                 He returned with a vision to fuse these global flavors with the best local produce. Today, our restaurant stands as a testament to that vision—a place where every meal tells a story of passion, quality, and community.
-              </span>
-            </p>
+              </p>
+            </div>
           </div>
           <div className="order-1 md:order-2 aspect-[4/3] relative rounded-lg overflow-hidden shadow-lg">
             <Image 
