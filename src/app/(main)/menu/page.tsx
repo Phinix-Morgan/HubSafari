@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, query, where, onSnapshot } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import type { MenuItem } from '@/types';
 import MenuItemCard from '@/components/menu/menu-item-card';
@@ -19,26 +19,27 @@ export default function MenuPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchMenuItems = async () => {
-      try {
-        const menuItemsCollection = collection(db, 'menuItems');
-        const q = query(menuItemsCollection, where("isAvailable", "==", true));
-        const querySnapshot = await getDocs(q);
-        const items = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as MenuItem));
-        
-        if (items.length > 0) {
-          const uniqueCategories = ["All", ...Array.from(new Set(items.map(item => item.category)))];
-          setCategories(uniqueCategories);
-        }
-        
-        setMenuItems(items);
-      } catch (error) {
-        console.error("Error fetching menu items: ", error);
-      } finally {
-        setLoading(false);
+    const menuItemsCollection = collection(db, 'menuItems');
+    const q = query(menuItemsCollection, where("isAvailable", "==", true));
+    
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const items = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as MenuItem));
+      
+      if (items.length > 0) {
+        const uniqueCategories = ["All", ...Array.from(new Set(items.map(item => item.category)))];
+        setCategories(uniqueCategories);
+      } else {
+        setCategories([]);
       }
-    };
-    fetchMenuItems();
+      
+      setMenuItems(items);
+      setLoading(false);
+    }, (error) => {
+      console.error("Error fetching menu items: ", error);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const renderSkeletons = () => (
