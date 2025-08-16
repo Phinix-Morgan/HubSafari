@@ -10,6 +10,7 @@ export type MenuItem = {
   isFeatured: boolean;
   imageUrl?: string;
   isAvailable: boolean;
+  category: string;
 };
 
 export type CartItem = MenuItem & {

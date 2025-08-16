@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useCart } from '@/hooks/use-cart';
 import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 
 interface MenuItemCardProps {
   item: MenuItem;
@@ -42,7 +43,7 @@ export default function MenuItemCard({ item }: MenuItemCardProps) {
   }
 
   const renderPrice = () => {
-    if (item.hasHalfQuantity && item.price.half) {
+    if (item.price.half && item.hasHalfQuantity) {
       return (
         <div className="text-lg font-bold text-primary flex items-center">
           <IndianRupee className="h-4 w-4 mr-1" />{item.price.half.toFixed(2)} (Half) / <IndianRupee className="h-4 w-4 mr-1 ml-2" />{item.price.full.toFixed(2)} (Full)
@@ -57,7 +58,7 @@ export default function MenuItemCard({ item }: MenuItemCardProps) {
   };
 
   return (
-    <Card className="flex flex-col overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+    <Card className={cn("flex flex-col overflow-hidden transition-all duration-300", !item.isAvailable && "opacity-60", item.isAvailable && "hover:shadow-lg hover:-translate-y-1")}>
       <CardHeader className="p-0">
         <div className="aspect-[4/3] relative bg-muted flex items-center justify-center">
           {item.imageUrl ? (
@@ -71,6 +72,11 @@ export default function MenuItemCard({ item }: MenuItemCardProps) {
           ) : (
              <Utensils className="h-16 w-16 text-muted-foreground/50" />
           )}
+           {!item.isAvailable && (
+            <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+              <span className="text-white font-bold text-lg bg-black/50 px-4 py-2 rounded-md">Unavailable</span>
+            </div>
+          )}
         </div>
       </CardHeader>
       <CardContent className="p-4 flex-grow">
@@ -82,18 +88,18 @@ export default function MenuItemCard({ item }: MenuItemCardProps) {
         <div className="flex w-full gap-2">
             {item.hasHalfQuantity ? (
                 <>
-                    <DropdownMenu>
+                    <DropdownMenu disabled={!item.isAvailable}>
                         <DropdownMenuTrigger asChild>
-                            <Button className="flex-1">Add to Cart</Button>
+                            <Button className="flex-1" disabled={!item.isAvailable}>Add to Cart</Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
                             <DropdownMenuItem onClick={() => handleAddToCart('half')}>Half</DropdownMenuItem>
                             <DropdownMenuItem onClick={() => handleAddToCart('full')}>Full</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
-                    <DropdownMenu>
+                    <DropdownMenu disabled={!item.isAvailable}>
                          <DropdownMenuTrigger asChild>
-                            <Button variant="outline" className="flex-1">Order Now</Button>
+                            <Button variant="outline" className="flex-1" disabled={!item.isAvailable}>Order Now</Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
                             <DropdownMenuItem onClick={() => handleDirectOrder('half')}>Half</DropdownMenuItem>
@@ -103,8 +109,8 @@ export default function MenuItemCard({ item }: MenuItemCardProps) {
                 </>
             ) : (
                 <>
-                    <AddToCartButton item={item} selectedQuantity='full' className="flex-1" />
-                    <Button variant="outline" onClick={() => handleDirectOrder('full')} className="flex-1">Order Now</Button>
+                    <AddToCartButton item={item} selectedQuantity='full' className="flex-1" disabled={!item.isAvailable} />
+                    <Button variant="outline" onClick={() => handleDirectOrder('full')} className="flex-1" disabled={!item.isAvailable}>Order Now</Button>
                 </>
             )}
         </div>
