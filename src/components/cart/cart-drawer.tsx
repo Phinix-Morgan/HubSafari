@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { Minus, Plus, Trash2, X, ImageIcon } from 'lucide-react';
+import { Minus, Plus, Trash2, X, Utensils } from 'lucide-react';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -52,7 +52,7 @@ export default function CartDrawer({ isOpen, onOpenChange }: CartDrawerProps) {
                         {item.imageUrl ? (
                             <Image src={item.imageUrl} alt={item.name} fill className="rounded-md object-cover" />
                         ) : (
-                            <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                            <Utensils className="h-6 w-6 text-muted-foreground" />
                         )}
                       </div>
                       <div>

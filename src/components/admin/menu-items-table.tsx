@@ -1,6 +1,5 @@
 "use client";
 
-import Image from 'next/image';
 import Link from 'next/link';
 import {
   Table,
@@ -28,7 +27,7 @@ import { deleteDoc, doc } from 'firebase/firestore';
 import { db, storage } from '@/lib/firebase';
 import { deleteObject, ref } from 'firebase/storage';
 import { useToast } from '@/hooks/use-toast';
-import { FileEdit, ImageIcon, Trash2 } from 'lucide-react';
+import { FileEdit, Trash2 } from 'lucide-react';
 
 interface MenuItemsTableProps {
   menuItems: MenuItem[];
@@ -42,7 +41,7 @@ export default function MenuItemsTable({ menuItems }: MenuItemsTableProps) {
       // Delete Firestore document
       await deleteDoc(doc(db, 'menuItems', item.id));
 
-      // Delete image from Storage
+      // Delete image from Storage if it exists
       if (item.imageUrl) {
         try {
             const imageRef = ref(storage, item.imageUrl);
@@ -64,7 +63,6 @@ export default function MenuItemsTable({ menuItems }: MenuItemsTableProps) {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-24">Image</TableHead>
           <TableHead>Name</TableHead>
           <TableHead>Category</TableHead>
           <TableHead>Price</TableHead>
@@ -75,21 +73,6 @@ export default function MenuItemsTable({ menuItems }: MenuItemsTableProps) {
       <TableBody>
         {menuItems.map((item) => (
           <TableRow key={item.id}>
-            <TableCell>
-               {item.imageUrl ? (
-                <Image
-                    src={item.imageUrl}
-                    alt={item.name}
-                    width={64}
-                    height={64}
-                    className="rounded-md object-cover aspect-square"
-                />
-              ) : (
-                <div className="w-16 h-16 bg-muted rounded-md flex items-center justify-center">
-                    <ImageIcon className="h-6 w-6 text-muted-foreground" />
-                </div>
-              )}
-            </TableCell>
             <TableCell className="font-medium">{item.name}</TableCell>
             <TableCell>
               <Badge variant="outline">{item.category}</Badge>
