@@ -100,9 +100,9 @@ export default function LoginPage() {
         <CardFooter className="text-xs text-muted-foreground mt-4">
             <div className="flex items-start space-x-2">
                 <Info className="h-4 w-4 mt-0.5" />
-                <p>
+                <div>
                     To create an admin user, go to your Firebase project's Authentication section and add a new user with an email and password.
-                </p>
+                </div>
             </div>
         </CardFooter>
       </Card>
