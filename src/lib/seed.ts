@@ -77,6 +77,15 @@ const menuItems = [
         isAvailable: true,
         dataAiHint: 'iced tea'
     },
+    {
+        name: 'Filet Mignon',
+        description: '8oz center-cut beef tenderloin, seasoned and grilled to perfection. Served with mashed potatoes and seasonal vegetables.',
+        price: 32.00,
+        category: 'Main Courses',
+        imageUrl: 'https://placehold.co/600x400.png',
+        isAvailable: false,
+        dataAiHint: 'filet mignon'
+    }
 ];
 
 export async function seedDatabase() {
@@ -88,8 +97,9 @@ export async function seedDatabase() {
     console.log('Menu items collection is empty. Seeding database...');
     const batch = writeBatch(db);
     menuItems.forEach(item => {
+      const { dataAiHint, ...menuItemData } = item;
       const docRef = doc(collection(db, 'menuItems')); // Auto-generates an ID
-      batch.set(docRef, item);
+      batch.set(docRef, menuItemData);
     });
     await batch.commit();
     console.log('Database seeded successfully!');
