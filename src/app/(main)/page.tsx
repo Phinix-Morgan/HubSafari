@@ -45,13 +45,16 @@ function FeaturedItemsSection() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const menuItemsCollection = collection(db, 'menuItems');
-        // We fetch all items and filter client-side to avoid needing an index for the isAvailable query.
-        // For larger menus, creating an index would be better.
-        const unsubscribe = onSnapshot(menuItemsCollection, (querySnapshot) => {
+        const q = query(
+            collection(db, 'menuItems'), 
+            where("isAvailable", "==", true),
+            where("isFeatured", "==", true), 
+            limit(4)
+        );
+        
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
             const items = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as MenuItem));
-            const availableItems = items.filter(item => item.isAvailable).slice(0, 4);
-            setFeaturedItems(availableItems);
+            setFeaturedItems(items);
             setLoading(false);
         }, (error) => {
             console.error("Error fetching featured items: ", error);

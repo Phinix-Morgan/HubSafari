@@ -7,6 +7,7 @@ export type MenuItem = {
     full: number;
   };
   hasHalfQuantity: boolean;
+  isFeatured: boolean;
   imageUrl?: string;
   isAvailable: boolean;
 };

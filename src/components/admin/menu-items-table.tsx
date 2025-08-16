@@ -27,7 +27,7 @@ import type { MenuItem } from '@/types';
 import { deleteDoc, doc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useToast } from '@/hooks/use-toast';
-import { FileEdit, Trash2, Utensils } from 'lucide-react';
+import { FileEdit, Trash2, Utensils, Star } from 'lucide-react';
 import Image from 'next/image';
 
 interface MenuItemsTableProps {
@@ -75,7 +75,10 @@ export default function MenuItemsTable({ menuItems }: MenuItemsTableProps) {
                 )}
               </div>
             </TableCell>
-            <TableCell className="font-medium">{item.name}</TableCell>
+            <TableCell className="font-medium flex items-center gap-2">
+                {item.name}
+                {item.isFeatured && <Star className="h-4 w-4 text-primary" />}
+            </TableCell>
             <TableCell>
               <Badge variant="outline">{item.category}</Badge>
             </TableCell>

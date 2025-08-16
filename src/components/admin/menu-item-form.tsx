@@ -39,6 +39,7 @@ const formSchema = z.object({
   hasHalfQuantity: z.boolean().default(false),
   category: z.string().min(2, { message: "Category is required." }),
   isAvailable: z.boolean().default(true),
+  isFeatured: z.boolean().default(false),
   image: z.any().optional(),
 }).refine(data => {
     if (data.hasHalfQuantity) {
@@ -81,6 +82,7 @@ export default function MenuItemForm({ initialData }: MenuItemFormProps) {
       hasHalfQuantity: false,
       category: '',
       isAvailable: true,
+      isFeatured: false,
       image: undefined,
     },
   });
@@ -129,6 +131,7 @@ export default function MenuItemForm({ initialData }: MenuItemFormProps) {
         hasHalfQuantity: values.hasHalfQuantity,
         category: values.category,
         isAvailable: values.isAvailable,
+        isFeatured: values.isFeatured,
         imageUrl: imageUrl,
       };
 
@@ -253,9 +256,14 @@ export default function MenuItemForm({ initialData }: MenuItemFormProps) {
                         </FormItem>
                     )}
                 />
+                <div className="grid grid-cols-2 gap-4">
                  <FormField control={form.control} name="isAvailable" render={({ field }) => (
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm bg-background"><div className="space-y-0.5"><FormLabel>Item Availability</FormLabel></div><FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl></FormItem>
                 )} />
+                 <FormField control={form.control} name="isFeatured" render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm bg-background"><div className="space-y-0.5"><FormLabel>Featured Item</FormLabel></div><FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl></FormItem>
+                )} />
+                </div>
             </div>
             <div className="flex justify-end gap-2 pt-4">
                 <Button type="button" variant="outline" onClick={() => router.back()}>Cancel</Button>
@@ -267,4 +275,3 @@ export default function MenuItemForm({ initialData }: MenuItemFormProps) {
     </Card>
   );
 }
-
