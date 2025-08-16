@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, use } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import type { MenuItem } from '@/types';
@@ -8,16 +8,19 @@ import MenuItemForm from '@/components/admin/menu-item-form';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
-export default function EditItemPage({ params }: { params: { id: string } }) {
+export default function EditItemPage({ params }: { params: Promise<{ id: string }> }) {
+  // `use` will unwrap the promise. This is the new way to handle params.
+  const { id } = use(params);
+
   const [initialData, setInitialData] = useState<MenuItem | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (params.id) {
+    if (id) {
       const fetchItem = async () => {
         try {
-          const docRef = doc(db, 'menuItems', params.id);
+          const docRef = doc(db, 'menuItems', id);
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) {
             setInitialData({ id: docSnap.id, ...docSnap.data() } as MenuItem);
@@ -33,7 +36,7 @@ export default function EditItemPage({ params }: { params: { id: string } }) {
       };
       fetchItem();
     }
-  }, [params.id]);
+  }, [id]);
 
   if (loading) {
     return (
