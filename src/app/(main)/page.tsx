@@ -19,7 +19,7 @@ function HeroSection() {
     <section className="relative h-[60vh] md:h-[80vh] w-full flex items-center justify-center text-center text-white">
       <Image
         // Add your image to the `public/images` folder and reference it here.
-        src="/images/hero-background.jpg"
+        src="/images/hero-background.webp"
         alt="A delicious looking pizza on a rustic wooden table"
         data-ai-hint="modern restaurant interior"
         fill
