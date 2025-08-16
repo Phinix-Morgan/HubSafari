@@ -18,7 +18,8 @@ function HeroSection() {
   return (
     <section className="relative h-[60vh] md:h-[80vh] w-full flex items-center justify-center text-center text-white">
       <Image
-        src="https://placehold.co/1920x1080.png"
+        // Add your image to the `public/images` folder and reference it here.
+        src="/images/hero-background.jpg"
         alt="A delicious looking pizza on a rustic wooden table"
         data-ai-hint="gourmet pizza"
         fill
