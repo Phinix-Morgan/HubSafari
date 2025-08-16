@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { ReactNode } from 'react';
@@ -7,9 +8,9 @@ import { useToast } from '@/hooks/use-toast';
 
 export interface CartContextType {
   cartItems: CartItem[];
-  addToCart: (item: MenuItem) => void;
-  updateQuantity: (itemId: string, quantity: number) => void;
-  removeFromCart: (itemId: string) => void;
+  addToCart: (item: MenuItem, selectedQuantity: 'half' | 'full') => void;
+  updateQuantity: (itemId: string, selectedQuantity: 'half' | 'full', quantity: number) => void;
+  removeFromCart: (itemId: string, selectedQuantity: 'half' | 'full') => void;
   clearCart: () => void;
   cartCount: number;
   cartTotal: number;
@@ -32,35 +33,35 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('cart', JSON.stringify(cartItems));
   }, [cartItems]);
 
-  const addToCart = (item: MenuItem) => {
+  const addToCart = (item: MenuItem, selectedQuantity: 'half' | 'full') => {
     setCartItems(prevItems => {
-      const existingItem = prevItems.find(i => i.id === item.id);
+      const existingItem = prevItems.find(i => i.id === item.id && i.selectedQuantity === selectedQuantity);
       if (existingItem) {
         return prevItems.map(i =>
-          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
+          i.id === item.id && i.selectedQuantity === selectedQuantity ? { ...i, quantity: i.quantity + 1 } : i
         );
       }
-      return [...prevItems, { ...item, quantity: 1 }];
+      return [...prevItems, { ...item, quantity: 1, selectedQuantity }];
     });
     toast({
       title: "Added to cart",
-      description: `${item.name} is now in your cart.`,
+      description: `${item.name} (${selectedQuantity}) is now in your cart.`,
     });
   };
 
-  const updateQuantity = (itemId: string, quantity: number) => {
+  const updateQuantity = (itemId: string, selectedQuantity: 'half' | 'full', quantity: number) => {
     setCartItems(prevItems => {
       if (quantity <= 0) {
-        return prevItems.filter(i => i.id !== itemId);
+        return prevItems.filter(i => !(i.id === itemId && i.selectedQuantity === selectedQuantity));
       }
       return prevItems.map(i =>
-        i.id === itemId ? { ...i, quantity } : i
+        i.id === itemId && i.selectedQuantity === selectedQuantity ? { ...i, quantity } : i
       );
     });
   };
 
-  const removeFromCart = (itemId: string) => {
-    setCartItems(prevItems => prevItems.filter(i => i.id !== itemId));
+  const removeFromCart = (itemId: string, selectedQuantity: 'half' | 'full') => {
+    setCartItems(prevItems => prevItems.filter(i => !(i.id === itemId && i.selectedQuantity === selectedQuantity)));
   };
 
   const clearCart = () => {
@@ -68,7 +69,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
-  const cartTotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const cartTotal = cartItems.reduce((acc, item) => {
+    const price = item.selectedQuantity === 'half' && item.price.half ? item.price.half : item.price.full;
+    return acc + price * item.quantity
+  }, 0);
 
   return (
     <CartContext.Provider

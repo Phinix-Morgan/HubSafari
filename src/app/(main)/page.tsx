@@ -68,7 +68,7 @@ function FeaturedItemsSection() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {loading ? (
                         Array.from({ length: 4 }).map((_, index) => (
-                           <Card key={index}><CardContent className="p-4 space-y-4"><Skeleton className="h-48 w-full" /><Skeleton className="h-6 w-3/4" /><Skeleton className="h-4 w-full" /><Skeleton className="h-4 w-1/2" /><Skeleton className="h-10 w-32" /></CardContent></Card>
+                           <Card key={index}><CardContent className="p-4 space-y-4"><Skeleton className="h-48 w-full" /><Skeleton className="h-6 w-3/4" /><Skeleton className="h-4 w-full" /><Skeleton className="h-4 w-1/2" /><Skeleton className="h-10 w-full" /></CardContent></Card>
                         ))
                     ) : (
                         featuredItems.map(item => <MenuItemCard key={item.id} item={item} />)

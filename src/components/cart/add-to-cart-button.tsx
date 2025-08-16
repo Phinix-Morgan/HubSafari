@@ -8,13 +8,14 @@ import type { ComponentProps } from "react";
 
 interface AddToCartButtonProps extends ComponentProps<typeof Button> {
   item: MenuItem;
+  selectedQuantity: 'half' | 'full';
 }
 
-export default function AddToCartButton({ item, children, ...props }: AddToCartButtonProps) {
+export default function AddToCartButton({ item, selectedQuantity, children, ...props }: AddToCartButtonProps) {
   const { addToCart } = useCart();
 
   return (
-    <Button onClick={() => addToCart(item)} {...props}>
+    <Button onClick={() => addToCart(item, selectedQuantity)} {...props}>
       <ShoppingCart className="mr-2 h-4 w-4" />
       {children || "Add to Cart"}
     </Button>

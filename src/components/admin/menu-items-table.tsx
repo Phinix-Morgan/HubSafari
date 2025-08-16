@@ -79,7 +79,10 @@ export default function MenuItemsTable({ menuItems }: MenuItemsTableProps) {
             <TableCell>
               <Badge variant="outline">{item.category}</Badge>
             </TableCell>
-            <TableCell>${item.price.toFixed(2)}</TableCell>
+            <TableCell>
+                {item.hasHalfQuantity && item.price.half ? `₹${item.price.half.toFixed(2)} (Half) / ` : ''}
+                ₹{item.price.full.toFixed(2)} (Full)
+            </TableCell>
              <TableCell>
               <Badge variant={item.isAvailable ? "default" : "secondary"}>
                 {item.isAvailable ? 'Available' : 'Unavailable'}

@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useRouter } from 'next/navigation';
@@ -26,15 +26,28 @@ import {
 } from "@/components/ui/select";
 import { uploadImage } from '@/app/actions';
 import Image from 'next/image';
-import { Utensils } from 'lucide-react';
+import { Utensils, IndianRupee } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   description: z.string().min(10, { message: "Description must be at least 10 characters." }),
-  price: z.coerce.number().positive({ message: "Price must be a positive number." }),
+  price: z.object({
+    full: z.coerce.number().positive({ message: "Full price must be a positive number." }),
+    half: z.coerce.number().optional(),
+  }),
+  hasHalfQuantity: z.boolean().default(false),
   category: z.string().min(2, { message: "Category is required." }),
   isAvailable: z.boolean().default(true),
-  image: z.any().optional(), // Allow file upload
+  image: z.any().optional(),
+}).refine(data => {
+    if (data.hasHalfQuantity) {
+        return data.price.half !== undefined && data.price.half > 0;
+    }
+    return true;
+}, {
+    message: "Half price is required when half quantity is enabled.",
+    path: ["price.half"],
 });
 
 interface MenuItemFormProps {
@@ -53,15 +66,27 @@ export default function MenuItemForm({ initialData }: MenuItemFormProps) {
     resolver: zodResolver(formSchema),
     defaultValues: initialData ? {
         ...initialData,
+        price: {
+            full: initialData.price.full,
+            half: initialData.price.half,
+        },
         image: undefined,
     } : {
       name: '',
       description: '',
-      price: 0,
+      price: {
+          full: 0,
+      },
+      hasHalfQuantity: false,
       category: '',
       isAvailable: true,
       image: undefined,
     },
+  });
+
+  const hasHalfQuantity = useWatch({
+    control: form.control,
+    name: "hasHalfQuantity",
   });
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -96,7 +121,11 @@ export default function MenuItemForm({ initialData }: MenuItemFormProps) {
       const menuItemData = {
         name: values.name,
         description: values.description,
-        price: values.price,
+        price: {
+            full: values.price.full,
+            ...(values.hasHalfQuantity && { half: values.price.half })
+        },
+        hasHalfQuantity: values.hasHalfQuantity,
         category: values.category,
         isAvailable: values.isAvailable,
         imageUrl: imageUrl,
@@ -168,33 +197,61 @@ export default function MenuItemForm({ initialData }: MenuItemFormProps) {
                  <FormField control={form.control} name="description" render={({ field }) => (
                     <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} rows={5}/></FormControl><FormMessage /></FormItem>
                 )} />
-                <div className="grid grid-cols-2 gap-6">
-                    <FormField control={form.control} name="price" render={({ field }) => (
-                        <FormItem><FormLabel>Price</FormLabel><FormControl><Input type="number" step="0.01" {...field} /></FormControl><FormMessage /></FormItem>
+
+                <FormField
+                    control={form.control}
+                    name="hasHalfQuantity"
+                    render={({ field }) => (
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                            <FormControl>
+                                <Checkbox
+                                    checked={field.value}
+                                    onCheckedChange={field.onChange}
+                                />
+                            </FormControl>
+                            <div className="space-y-1 leading-none">
+                                <FormLabel>
+                                    Enable "Half" Quantity Option
+                                </FormLabel>
+                                <FormMessage />
+                            </div>
+                        </FormItem>
+                    )}
+                />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField control={form.control} name="price.full" render={({ field }) => (
+                        <FormItem><FormLabel>Full Price</FormLabel><FormControl><div className="relative"><IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" /><Input type="number" step="0.01" {...field} className="pl-8" /></div></FormControl><FormMessage /></FormItem>
                     )} />
-                    <FormField
-                        control={form.control}
-                        name="category"
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>Category</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Select a category" />
-                                </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                {categories.map(category => (
-                                    <SelectItem key={category} value={category}>{category}</SelectItem>
-                                ))}
-                                </SelectContent>
-                            </Select>
-                            <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                    {hasHalfQuantity && (
+                        <FormField control={form.control} name="price.half" render={({ field }) => (
+                            <FormItem><FormLabel>Half Price</FormLabel><FormControl><div className="relative"><IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" /><Input type="number" step="0.01" {...field} className="pl-8" /></div></FormControl><FormMessage /></FormItem>
+                        )} />
+                    )}
                 </div>
+
+                <FormField
+                    control={form.control}
+                    name="category"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Category</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select a category" />
+                            </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                            {categories.map(category => (
+                                <SelectItem key={category} value={category}>{category}</SelectItem>
+                            ))}
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
                  <FormField control={form.control} name="isAvailable" render={({ field }) => (
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm bg-background"><div className="space-y-0.5"><FormLabel>Item Availability</FormLabel></div><FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl></FormItem>
                 )} />

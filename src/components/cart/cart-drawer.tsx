@@ -8,6 +8,7 @@ import { useCart } from "@/hooks/use-cart";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Minus, Plus, Trash2, X, Utensils } from 'lucide-react';
+import { Badge } from '../ui/badge';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -24,8 +25,8 @@ export default function CartDrawer({ isOpen, onOpenChange }: CartDrawerProps) {
         return;
     }
 
-    const orderSummary = cartItems.map(item => `- ${item.quantity}x ${item.name}`).join('\n');
-    const message = `Hi, I'd like to order:\n${orderSummary}\n\nTotal: $${cartTotal.toFixed(2)}`;
+    const orderSummary = cartItems.map(item => `- ${item.quantity}x ${item.name} (${item.selectedQuantity})`).join('\n');
+    const message = `Hi, I'd like to order:\n${orderSummary}\n\nTotal: ₹${cartTotal.toFixed(2)}`;
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${restaurantPhoneNumber}?text=${encodedMessage}`;
     
@@ -33,6 +34,10 @@ export default function CartDrawer({ isOpen, onOpenChange }: CartDrawerProps) {
     clearCart();
     onOpenChange(false);
   };
+
+  const getItemPrice = (item: (typeof cartItems)[0]) => {
+    return item.selectedQuantity === 'half' && item.price.half ? item.price.half : item.price.full;
+  }
 
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
@@ -46,7 +51,7 @@ export default function CartDrawer({ isOpen, onOpenChange }: CartDrawerProps) {
             <ScrollArea className="flex-1">
               <div className="flex flex-col gap-4 p-6">
                 {cartItems.map(item => (
-                  <div key={item.id} className="flex items-center justify-between">
+                  <div key={item.id + item.selectedQuantity} className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <div className="w-16 h-16 bg-muted rounded-md flex items-center justify-center relative">
                         {item.imageUrl ? (
@@ -56,20 +61,20 @@ export default function CartDrawer({ isOpen, onOpenChange }: CartDrawerProps) {
                         )}
                       </div>
                       <div>
-                        <p className="font-semibold">{item.name}</p>
-                        <p className="text-sm text-muted-foreground">${item.price.toFixed(2)}</p>
+                        <p className="font-semibold">{item.name} <Badge variant="outline" className="capitalize">{item.selectedQuantity}</Badge></p>
+                        <p className="text-sm text-muted-foreground">₹{getItemPrice(item).toFixed(2)}</p>
                         <div className="flex items-center gap-2 mt-2">
-                          <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => updateQuantity(item.id, item.quantity - 1)}>
+                          <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => updateQuantity(item.id, item.selectedQuantity, item.quantity - 1)}>
                             <Minus className="h-4 w-4" />
                           </Button>
                           <span>{item.quantity}</span>
-                          <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => updateQuantity(item.id, item.quantity + 1)}>
+                          <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => updateQuantity(item.id, item.selectedQuantity, item.quantity + 1)}>
                             <Plus className="h-4 w-4" />
                           </Button>
                         </div>
                       </div>
                     </div>
-                    <Button variant="ghost" size="icon" onClick={() => removeFromCart(item.id)}>
+                    <Button variant="ghost" size="icon" onClick={() => removeFromCart(item.id, item.selectedQuantity)}>
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
                   </div>
@@ -81,7 +86,7 @@ export default function CartDrawer({ isOpen, onOpenChange }: CartDrawerProps) {
               <div className="w-full space-y-4">
                 <div className="flex justify-between font-bold text-lg">
                   <span>Total</span>
-                  <span>${cartTotal.toFixed(2)}</span>
+                  <span>₹{cartTotal.toFixed(2)}</span>
                 </div>
                 <Button className="w-full" onClick={handleOrderNow}>
                   Order on WhatsApp
