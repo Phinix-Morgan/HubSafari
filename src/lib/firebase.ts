@@ -4,13 +4,12 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig: FirebaseOptions = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_AUTH_DOMAIN",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_STORAGE_BUCKET",
-      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-      appId: "YOUR_APP_ID",
-      measurementId: "YOUR_MEASUREMENT_ID",
+      projectId: "flavors-express-52y57",
+      appId: "1:929527125904:web:acb20ceff7a5864a218515",
+      storageBucket: "flavors-express-52y57.appspot.com",
+      apiKey: "AIzaSyDaMGzx2c2Qymv5V5qVCZwZ2ZKk6HY7B2I",
+      authDomain: "flavors-express-52y57.firebaseapp.com",
+      messagingSenderId: "929527125904",
 };
 
 // Initialize Firebase for the client
