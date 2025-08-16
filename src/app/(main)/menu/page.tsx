@@ -20,19 +20,19 @@ export default function MenuPage() {
 
   useEffect(() => {
     const menuItemsCollection = collection(db, 'menuItems');
-    const q = query(menuItemsCollection, where("isAvailable", "==", true));
     
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    const unsubscribe = onSnapshot(menuItemsCollection, (querySnapshot) => {
       const items = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as MenuItem));
+      const availableItems = items.filter(item => item.isAvailable);
       
-      if (items.length > 0) {
-        const uniqueCategories = ["All", ...Array.from(new Set(items.map(item => item.category)))];
+      if (availableItems.length > 0) {
+        const uniqueCategories = ["All", ...Array.from(new Set(availableItems.map(item => item.category)))];
         setCategories(uniqueCategories);
       } else {
         setCategories([]);
       }
       
-      setMenuItems(items);
+      setMenuItems(availableItems);
       setLoading(false);
     }, (error) => {
       console.error("Error fetching menu items: ", error);

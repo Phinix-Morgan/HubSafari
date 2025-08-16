@@ -20,12 +20,15 @@ export default function DashboardPage() {
     const { toast } = useToast();
 
     useEffect(() => {
-        const q = query(collection(db, 'menuItems'), orderBy('name', 'asc'));
+        // Removing orderby to prevent index requirement for basic listing
+        const q = query(collection(db, 'menuItems'));
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
             const items: MenuItem[] = [];
             querySnapshot.forEach((doc) => {
                 items.push({ id: doc.id, ...doc.data() } as MenuItem);
             });
+            // Sort client-side instead
+            items.sort((a, b) => a.name.localeCompare(b.name));
             setMenuItems(items);
             if (loading) { // Only check for seeding on initial load
                 if (items.length === 0) {
@@ -41,7 +44,7 @@ export default function DashboardPage() {
         });
 
         return () => unsubscribe();
-    }, [loading]); // Rerun when loading state changes
+    }, [loading, toast]); // Added toast to dependency array
 
     const handleSeed = async (silent = false) => {
         setIsSeeding(true);

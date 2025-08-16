@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { db } from '@/lib/firebase';
-import { collection, getDocs, limit, query, where } from 'firebase/firestore';
+import { collection, getDocs, limit, query, where, onSnapshot } from 'firebase/firestore';
 import type { MenuItem } from '@/types';
 import MenuItemCard from '@/components/menu/menu-item-card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -45,21 +45,20 @@ function FeaturedItemsSection() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchFeaturedItems = async () => {
-            try {
-                // The database is now seeded from the admin dashboard instead.
-                const menuItemsCollection = collection(db, 'menuItems');
-                const q = query(menuItemsCollection, where("isAvailable", "==", true), limit(4));
-                const querySnapshot = await getDocs(q);
-                const items = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as MenuItem));
-                setFeaturedItems(items);
-            } catch (error) {
-                console.error("Error fetching featured items: ", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchFeaturedItems();
+        const menuItemsCollection = collection(db, 'menuItems');
+        // We fetch all items and filter client-side to avoid needing an index for the isAvailable query.
+        // For larger menus, creating an index would be better.
+        const unsubscribe = onSnapshot(menuItemsCollection, (querySnapshot) => {
+            const items = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as MenuItem));
+            const availableItems = items.filter(item => item.isAvailable).slice(0, 4);
+            setFeaturedItems(availableItems);
+            setLoading(false);
+        }, (error) => {
+            console.error("Error fetching featured items: ", error);
+            setLoading(false);
+        });
+
+        return () => unsubscribe();
     }, []);
 
     return (
