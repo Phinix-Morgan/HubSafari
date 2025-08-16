@@ -44,15 +44,15 @@ export default function MenuItemCard({ item }: MenuItemCardProps) {
   const renderPrice = () => {
     if (item.hasHalfQuantity && item.price.half) {
       return (
-        <p className="text-lg font-bold text-primary flex items-center">
+        <div className="text-lg font-bold text-primary flex items-center">
           <IndianRupee className="h-4 w-4 mr-1" />{item.price.half.toFixed(2)} (Half) / <IndianRupee className="h-4 w-4 mr-1 ml-2" />{item.price.full.toFixed(2)} (Full)
-        </p>
+        </div>
       );
     }
     return (
-      <p className="text-lg font-bold text-primary flex items-center">
+      <div className="text-lg font-bold text-primary flex items-center">
         <IndianRupee className="h-4 w-4 mr-1" />{item.price.full.toFixed(2)}
-      </p>
+      </div>
     );
   };
 
