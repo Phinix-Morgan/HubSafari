@@ -68,7 +68,7 @@ export default function MenuItemForm({ initialData }: MenuItemFormProps) {
         ...initialData,
         price: {
             full: initialData.price.full,
-            half: initialData.price.half,
+            half: initialData.price.half || 0,
         },
         image: undefined,
     } : {
@@ -76,6 +76,7 @@ export default function MenuItemForm({ initialData }: MenuItemFormProps) {
       description: '',
       price: {
           full: 0,
+          half: 0,
       },
       hasHalfQuantity: false,
       category: '',
@@ -266,3 +267,4 @@ export default function MenuItemForm({ initialData }: MenuItemFormProps) {
     </Card>
   );
 }
+
