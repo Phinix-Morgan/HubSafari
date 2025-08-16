@@ -26,7 +26,7 @@ export default function Header() {
         <div className="container flex h-16 items-center">
           <Link href="/" className="mr-6 flex items-center space-x-2">
             <ChefHat className="h-6 w-6 text-primary" />
-            <span className="font-bold font-headline text-lg">Flavors Express</span>
+            <span className="font-bold font-headline text-lg">HubSafari</span>
           </Link>
           
           <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
@@ -64,7 +64,7 @@ export default function Header() {
                 <div className="flex flex-col space-y-4 p-4">
                     <Link href="/" className="mr-6 flex items-center space-x-2" onClick={() => setMobileMenuOpen(false)}>
                         <ChefHat className="h-6 w-6 text-primary" />
-                        <span className="font-bold font-headline text-lg">Flavors Express</span>
+                        <span className="font-bold font-headline text-lg">HubSafari</span>
                     </Link>
                     {navLinks.map(link => (
                       <Link key={link.href} href={link.href} className="transition-colors hover:text-primary" onClick={() => setMobileMenuOpen(false)}>

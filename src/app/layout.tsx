@@ -5,8 +5,8 @@ import { CartProvider } from '@/context/cart-context';
 import { AuthProvider } from '@/context/auth-context';
 
 export const metadata: Metadata = {
-  title: 'Flavors Express',
-  description: 'Authentic Flavors, Modern Twist.',
+  title: 'HubSafari',
+  description: 'From your morning coffee fix to your evening meal, we\'ve got you covered.',
 };
 
 export default function RootLayout({

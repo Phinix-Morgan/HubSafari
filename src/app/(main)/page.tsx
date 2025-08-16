@@ -21,17 +21,17 @@ function HeroSection() {
         // Add your image to the `public/images` folder and reference it here.
         src="/images/hero-background.jpg"
         alt="A delicious looking pizza on a rustic wooden table"
-        data-ai-hint="gourmet pizza"
+        data-ai-hint="modern restaurant interior"
         fill
         className="object-cover brightness-50"
         priority
       />
       <div className="relative z-10 p-4">
         <h1 className="text-4xl md:text-7xl font-headline mb-4 drop-shadow-lg">
-          Authentic Flavors, Modern Twist
+          HubSafari Cafe
         </h1>
         <p className="text-lg md:text-xl max-w-2xl mx-auto mb-8 drop-shadow-md">
-          Discover a culinary experience where traditional recipes meet contemporary innovation.
+          From your morning coffee fix to your evening meal, we've got you covered. Enjoy handcrafted drinks, light bites, and a full menu of savory dishes, all served in a cozy and welcoming atmosphere.
         </p>
         <Button asChild size="lg" className="text-lg py-6 px-8">
           <Link href="/menu">View Menu</Link>
@@ -94,7 +94,7 @@ function AboutSnippet() {
                     <div>
                         <h2 className="text-3xl md:text-4xl font-headline mb-4">Our Story</h2>
                         <p className="text-muted-foreground mb-6">
-                            From a humble kitchen to a beloved local eatery, Flavors Express has always been about one thing: sharing our passion for food. We believe in fresh ingredients, bold flavors, and a warm, welcoming atmosphere.
+                            From a humble kitchen to a beloved local eatery, HubSafari has always been about one thing: sharing our passion for food. We believe in fresh ingredients, bold flavors, and a warm, welcoming atmosphere.
                         </p>
                         <Button asChild variant="outline">
                             <Link href="/about">Read More</Link>
