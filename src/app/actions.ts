@@ -1,8 +1,9 @@
 
 'use server';
 
-import { writeFile } from 'fs/promises';
+import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
+import { existsSync } from 'fs';
 
 export async function uploadImage(formData: FormData) {
   const file = formData.get('image') as File;
@@ -13,9 +14,21 @@ export async function uploadImage(formData: FormData) {
   const bytes = await file.arrayBuffer();
   const buffer = Buffer.from(bytes);
 
+  const uploadsDir = join(process.cwd(), 'public/uploads');
+
+  // Ensure the uploads directory exists
+  if (!existsSync(uploadsDir)) {
+    try {
+      await mkdir(uploadsDir, { recursive: true });
+    } catch (error) {
+      console.error('Could not create upload directory:', error);
+      return { success: false, error: 'Failed to create upload directory.' };
+    }
+  }
+
   // Use a timestamp and the original file name to create a unique name
   const filename = `${Date.now()}-${file.name.replace(/\s/g, '_')}`;
-  const path = join(process.cwd(), 'public/uploads', filename);
+  const path = join(uploadsDir, filename);
   
   try {
     await writeFile(path, buffer);
