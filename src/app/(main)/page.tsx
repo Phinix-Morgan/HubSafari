@@ -12,7 +12,7 @@ import type { MenuItem } from '@/types';
 import MenuItemCard from '@/components/menu/menu-item-card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { seedDatabase } from '@/lib/seed';
+
 
 function HeroSection() {
   return (
