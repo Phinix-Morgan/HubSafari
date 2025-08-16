@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from 'next/image';
@@ -6,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { Minus, Plus, Trash2, X } from 'lucide-react';
+import { Minus, Plus, Trash2, X, ImageIcon } from 'lucide-react';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -47,7 +48,13 @@ export default function CartDrawer({ isOpen, onOpenChange }: CartDrawerProps) {
                 {cartItems.map(item => (
                   <div key={item.id} className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                      <Image src={item.imageUrl} alt={item.name} width={64} height={64} className="rounded-md object-cover" />
+                      <div className="w-16 h-16 bg-muted rounded-md flex items-center justify-center relative">
+                        {item.imageUrl ? (
+                            <Image src={item.imageUrl} alt={item.name} fill className="rounded-md object-cover" />
+                        ) : (
+                            <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                        )}
+                      </div>
                       <div>
                         <p className="font-semibold">{item.name}</p>
                         <p className="text-sm text-muted-foreground">${item.price.toFixed(2)}</p>
