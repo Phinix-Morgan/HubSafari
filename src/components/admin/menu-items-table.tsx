@@ -80,7 +80,7 @@ export default function MenuItemsTable({ menuItems }: MenuItemsTableProps) {
               <Badge variant="outline">{item.category}</Badge>
             </TableCell>
             <TableCell>
-                {item.price ? (
+                {item.price && typeof item.price.full === 'number' ? (
                     <>
                         {item.hasHalfQuantity && item.price.half ? `₹${item.price.half.toFixed(2)} (Half) / ` : ''}
                         ₹{item.price.full.toFixed(2)} (Full)
