@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { collection, getDocs, query, where, onSnapshot } from 'firebase/firestore';
+import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import type { MenuItem } from '@/types';
 import MenuItemCard from '@/components/menu/menu-item-card';
@@ -55,7 +55,7 @@ export default function MenuPage() {
         <Utensils className="mx-auto h-12 w-12 text-muted-foreground" />
         <h2 className="mt-4 text-2xl font-headline">Our Menu is Currently Empty</h2>
         <p className="mt-2 text-muted-foreground">The chef is busy preparing new dishes. Please check back later!</p>
-        <p className="mt-1 text-sm text-muted-foreground">(Or, if you're the admin, <Link href="/admin/dashboard" className="underline hover:text-primary">go seed the database</Link>.)</p>
+        <p className="mt-1 text-sm text-muted-foreground">If you're the admin, please add items through the <Link href="/admin/dashboard" className="underline hover:text-primary">dashboard</Link>.</p>
     </div>
   );
 
