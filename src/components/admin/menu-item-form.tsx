@@ -55,8 +55,6 @@ interface MenuItemFormProps {
   initialData?: MenuItem | null;
 }
 
-const categories = ["Appetizers", "Main Courses", "Desserts", "Drinks"];
-
 export default function MenuItemForm({ initialData }: MenuItemFormProps) {
   const router = useRouter();
   const { toast } = useToast();
@@ -234,28 +232,10 @@ export default function MenuItemForm({ initialData }: MenuItemFormProps) {
                     )}
                 </div>
 
-                <FormField
-                    control={form.control}
-                    name="category"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Category</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select a category" />
-                            </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                            {categories.map(category => (
-                                <SelectItem key={category} value={category}>{category}</SelectItem>
-                            ))}
-                            </SelectContent>
-                        </Select>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                <FormField control={form.control} name="category" render={({ field }) => (
+                    <FormItem><FormLabel>Category</FormLabel><FormControl><Input placeholder="e.g. Appetizers, Main Courses" {...field} /></FormControl><FormMessage /></FormItem>
+                )} />
+
                 <div className="grid grid-cols-2 gap-4">
                  <FormField control={form.control} name="isAvailable" render={({ field }) => (
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm bg-background"><div className="space-y-0.5"><FormLabel>Item Availability</FormLabel></div><FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl></FormItem>
