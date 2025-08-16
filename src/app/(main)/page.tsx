@@ -47,7 +47,7 @@ function FeaturedItemsSection() {
     useEffect(() => {
         const fetchFeaturedItems = async () => {
             try {
-                await seedDatabase();
+                // The database is now seeded from the admin dashboard instead.
                 const menuItemsCollection = collection(db, 'menuItems');
                 const q = query(menuItemsCollection, where("isAvailable", "==", true), limit(4));
                 const querySnapshot = await getDocs(q);
