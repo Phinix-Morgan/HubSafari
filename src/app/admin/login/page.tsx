@@ -9,10 +9,10 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { ChefHat } from 'lucide-react';
+import { ChefHat, Info } from 'lucide-react';
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
@@ -97,6 +97,14 @@ export default function LoginPage() {
             </form>
           </Form>
         </CardContent>
+        <CardFooter className="text-xs text-muted-foreground mt-4">
+            <div className="flex items-start space-x-2">
+                <Info className="h-4 w-4 mt-0.5" />
+                <p>
+                    To create an admin user, go to your Firebase project's Authentication section and add a new user with an email and password.
+                </p>
+            </div>
+        </CardFooter>
       </Card>
     </div>
   );
