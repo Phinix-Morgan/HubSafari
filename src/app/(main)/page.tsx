@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from 'react';
@@ -11,14 +12,15 @@ import type { MenuItem } from '@/types';
 import MenuItemCard from '@/components/menu/menu-item-card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { seedDatabase } from '@/lib/seed';
 
 function HeroSection() {
   return (
     <section className="relative h-[60vh] md:h-[80vh] w-full flex items-center justify-center text-center text-white">
       <Image
         src="https://placehold.co/1920x1080.png"
-        alt="Restaurant ambiance"
-        data-ai-hint="restaurant food"
+        alt="A delicious looking pizza on a rustic wooden table"
+        data-ai-hint="gourmet pizza"
         fill
         className="object-cover brightness-50"
         priority
@@ -45,6 +47,7 @@ function FeaturedItemsSection() {
     useEffect(() => {
         const fetchFeaturedItems = async () => {
             try {
+                await seedDatabase();
                 const menuItemsCollection = collection(db, 'menuItems');
                 const q = query(menuItemsCollection, where("isAvailable", "==", true), limit(4));
                 const querySnapshot = await getDocs(q);
@@ -83,7 +86,7 @@ function AboutSnippet() {
             <div className="container">
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                     <div className="aspect-video relative rounded-lg overflow-hidden shadow-lg">
-                         <Image src="https://placehold.co/600x400.png" data-ai-hint="restaurant interior" alt="Restaurant interior" fill className="object-cover" />
+                         <Image src="https://placehold.co/600x400.png" data-ai-hint="modern restaurant" alt="The warm and inviting interior of a modern restaurant" fill className="object-cover" />
                     </div>
                     <div>
                         <h2 className="text-3xl md:text-4xl font-headline mb-4">Our Story</h2>
@@ -102,9 +105,9 @@ function AboutSnippet() {
 
 function TestimonialsSection() {
     const testimonials = [
-        { name: "Sarah J.", quote: "Absolutely the best meal I've had in ages! The attention to detail is stunning.", avatar: "https://placehold.co/100x100.png" },
-        { name: "Mike R.", quote: "A hidden gem! The atmosphere is cozy and the food is out of this world. Highly recommended.", avatar: "https://placehold.co/100x100.png" },
-        { name: "Emily C.", quote: "I can't get enough of their desserts. A perfect end to a perfect meal every single time.", avatar: "https://placehold.co/100x100.png" },
+        { name: "Sarah J.", quote: "Absolutely the best meal I've had in ages! The attention to detail is stunning.", avatar: "https://placehold.co/100x100.png", dataAiHint: "happy woman" },
+        { name: "Mike R.", quote: "A hidden gem! The atmosphere is cozy and the food is out of this world. Highly recommended.", avatar: "https://placehold.co/100x100.png", dataAiHint: "smiling man" },
+        { name: "Emily C.", quote: "I can't get enough of their desserts. A perfect end to a perfect meal every single time.", avatar: "https://placehold.co/100x100.png", dataAiHint: "delighted person" },
     ];
     return (
         <section className="py-16 md:py-24 bg-secondary">
@@ -117,7 +120,7 @@ function TestimonialsSection() {
                                 <p className="text-muted-foreground mb-4 italic">"{t.quote}"</p>
                                 <div className="flex items-center justify-center gap-3">
                                     <Avatar>
-                                        <AvatarImage src={t.avatar} alt={t.name} data-ai-hint="person" />
+                                        <AvatarImage src={t.avatar} alt={t.name} data-ai-hint={t.dataAiHint} />
                                         <AvatarFallback>{t.name.charAt(0)}</AvatarFallback>
                                     </Avatar>
                                     <p className="font-semibold">{t.name}</p>

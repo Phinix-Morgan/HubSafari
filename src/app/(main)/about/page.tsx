@@ -1,12 +1,13 @@
+
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ChefHat, Heart, Leaf } from 'lucide-react';
 
 export default function AboutPage() {
   const teamMembers = [
-    { name: 'Marco Chen', role: 'Head Chef', avatar: 'https://placehold.co/100x100.png', dataAiHint: "chef portrait" },
-    { name: 'Isabella Rodriguez', role: 'Pastry Chef', avatar: 'https://placehold.co/100x100.png', dataAiHint: "chef portrait" },
-    { name: 'John Doe', role: 'Founder', avatar: 'https://placehold.co/100x100.png', dataAiHint: "person portrait" },
+    { name: 'Marco Chen', role: 'Head Chef', avatar: 'https://placehold.co/100x100.png', dataAiHint: "male chef" },
+    { name: 'Isabella Rodriguez', role: 'Pastry Chef', avatar: 'https://placehold.co/100x100.png', dataAiHint: "female chef" },
+    { name: 'John Doe', role: 'Founder', avatar: 'https://placehold.co/100x100.png', dataAiHint: "restaurant owner" },
   ];
 
   const values = [
@@ -55,8 +56,8 @@ export default function AboutPage() {
           <div className="order-1 md:order-2 aspect-[4/3] relative rounded-lg overflow-hidden shadow-lg">
             <Image 
               src="https://placehold.co/600x450.png" 
-              data-ai-hint="restaurant kitchen" 
-              alt="The kitchen at Flavors Express" 
+              data-ai-hint="busy kitchen" 
+              alt="The bustling kitchen at Flavors Express with chefs at work" 
               fill 
               className="object-cover"
             />
