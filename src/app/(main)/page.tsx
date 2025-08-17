@@ -89,7 +89,7 @@ function AboutSnippet() {
             <div className="container">
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                     <div className="aspect-video relative rounded-lg overflow-hidden shadow-lg">
-                         <Image src="https://placehold.co/600x400.png" data-ai-hint="modern restaurant" alt="The warm and inviting interior of a modern restaurant" fill className="object-cover" />
+                         <Image src="/images/ourStory.jpg" alt="The warm and inviting interior of a modern restaurant" fill className="object-cover" />
                     </div>
                     <div>
                         <h2 className="text-3xl md:text-4xl font-headline mb-4">Our Story</h2>
